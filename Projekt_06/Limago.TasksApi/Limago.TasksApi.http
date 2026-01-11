@@ -1,0 +1,6 @@
+@Limago.TasksApi_HostAddress = http://localhost:5052
+
+GET {{Limago.TasksApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
