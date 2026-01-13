@@ -10,4 +10,36 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="frontend\dist\" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+  <!-- Pfad zum Vue-Frontend -->
+  <FrontendDir>frontend</FrontendDir>
+</PropertyGroup>
+
+<!-- npm install (nur wenn nicht DesignTimeBuild, z.B. IntelliSense) -->
+<Target Name="Vue_NpmInstall" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' and Exists('$(FrontendDir)\package.json') ">
+  <Message Text="Running npm install in $(FrontendDir)..." Importance="high" />
+  <Exec WorkingDirectory="$(FrontendDir)" Command="npm.cmd install" />
+</Target>
+
+<!-- Vue Build -->
+<Target Name="Vue_Build" AfterTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' and Exists('$(FrontendDir)\package.json') ">
+  <Message Text="Building Vue app in $(FrontendDir)..." Importance="high" />
+  <Exec WorkingDirectory="$(FrontendDir)" Command="npm.cmd run build" />
+
+  <!-- Optional: alte Assets entfernen -->
+  <RemoveDir Directories="$(ProjectDir)wwwroot\assets" Condition="Exists('$(ProjectDir)wwwroot\assets')" />
+
+  <!-- dist -> wwwroot kopieren -->
+  <ItemGroup>
+    <VueDistFiles Include="$(FrontendDir)\dist\**\*.*" />
+  </ItemGroup>
+
+  <Copy SourceFiles="@(VueDistFiles)" DestinationFiles="@(VueDistFiles->'$(ProjectDir)wwwroot\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+</Target>
+
+
 </Project>
