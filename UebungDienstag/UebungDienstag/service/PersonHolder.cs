@@ -7,6 +7,28 @@
     {
         private readonly Dictionary<Guid, Person> _persons = new();
 
+
+        public PersonHolder()
+        {
+            // Initialisierungs-Script: Testdaten hinzufügen
+            var p1 = new Person
+            {
+                Id = Guid.NewGuid(),
+                Vorname = "Max",
+                Nachname = "Mustermann",
+                Aktiv = true
+            };
+            var p2 = new Person
+            {
+                Id = Guid.NewGuid(),
+                Vorname = "Erika",
+                Nachname = "Musterfrau",
+                Aktiv = false
+            };
+
+            _persons[p1.Id] = p1;
+            _persons[p2.Id] = p2;
+        }
         /// <summary>
         /// Insertiert eine neue Person.
         /// Liefert false, wenn eine Person mit dieser Id bereits existiert.
